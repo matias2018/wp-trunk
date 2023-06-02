@@ -1,0 +1,102 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+- script: |
+    echo Add other tasks to build, test, and deploy your project.
+    echo See https://aka.ms/yaml
+  displayName: 'Run a multi-line script'
+
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+#  vmImage: ubuntu-latest
+ name: Hosted Ubuntu 1604
+ demands: node.js
+
+steps:
+- task: NodeTool@0
+  displayName: 'Install Node.js'
+  inputs:
+    versionSpec: 10.13.0
+  
+- bash: 
+    npm install npm -g
+    npm install grunt-cli -g
+    npm install
+  displayName: 'Install Grunt globally'
+
+- task: Grunt@0
+  displayName: 'Build WordPress with Grunt'
+  inputs:
+   gruntFile: Gruntfile.js
+
+- task: ArchiveFiles@2
+  displayName: 'Archive build files'
+  inputs:
+   rootFolderOrFile: '$(Build.Repository.LocalPath)/build'
+   includeRootFolder: false
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+
+# =================================
+NOVO
+# =================================
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+  demands: node.js
+
+variables:
+  system.debug: true
+  
+steps:
+- task: NodeTool@0
+  displayName: 'Install Node.js'
+  inputs:
+    versionSpec: 14.17.0
+
+- bash: |
+    npm cache clean --force
+    npm install -g npm@latest
+    npm install -g grunt-cli
+  displayName: 'Update npm and install Grunt globally'
+
+- bash: |
+    npm install
+  displayName: 'Install project dependencies'
+
+- task: Grunt@0
+  displayName: 'Build WordPress with Grunt'
+  inputs:
+    gruntFile: Gruntfile.js
+
+- task: ArchiveFiles@2
+  displayName: 'Archive build files'
+  inputs:
+    rootFolderOrFile: '$(Build.Repository.LocalPath)/build'
+    includeRootFolder: false
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+  
