@@ -9,7 +9,7 @@ steps:
 - task: NodeTool@0
   displayName: 'Install Node.js'
   inputs:
-    versionSpec: 14.15.0
+    versionSpec: 14.17.0
 
 - bash: |
     npm install -g npm
