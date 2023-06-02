@@ -5,6 +5,9 @@ pool:
   vmImage: ubuntu-latest
   demands: node.js
 
+variables:
+  system.debug: true
+  
 steps:
 - task: NodeTool@0
   displayName: 'Install Node.js'
