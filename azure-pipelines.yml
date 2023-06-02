@@ -13,7 +13,7 @@ steps:
 
 - bash: |
     npm cache clean --force
-    npm install -g npm@latest
+    npm install -g npm@7.x
     npm install -g grunt-cli
   displayName: 'Update npm and install Grunt globally'
 
@@ -34,5 +34,3 @@ steps:
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'
-
-
