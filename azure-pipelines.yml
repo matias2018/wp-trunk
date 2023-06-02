@@ -4,16 +4,35 @@
 # https://aka.ms/yaml
 
 trigger:
-- main
+- master
 
 pool:
-  vmImage: ubuntu-latest
+#  vmImage: ubuntu-latest
+ name: Hosted Ubuntu 1604
+ demands: node.js
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- task: NodeTool@0
+  displayName: 'Install Node.js'
+  inputs:
+    versionSpec: 10.13.0
+  
+- bash: 
+    npm install npm -g
+    npm install grunt-cli -g
+    npm install
+  displayName: 'Install Grunt globally'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- task: Grunt@0
+  displayName: 'Build WordPress with Grunt'
+  inputs:
+   gruntFile: Gruntfile.js
+
+- task: ArchiveFiles@2
+  displayName: 'Archive build files'
+  inputs:
+   rootFolderOrFile: '$(Build.Repository.LocalPath)/build'
+   includeRootFolder: false
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
