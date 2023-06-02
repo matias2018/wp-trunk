@@ -15,7 +15,8 @@ steps:
     versionSpec: 14.17.0
 
 - bash: |
-    npm install -g npm
+    npm cache clean --force
+    npm install -g npm@latest
     npm install -g grunt-cli
   displayName: 'Update npm and install Grunt globally'
 
