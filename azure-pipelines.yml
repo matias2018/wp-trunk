@@ -1,0 +1,36 @@
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+  demands: node.js
+
+steps:
+- task: NodeTool@0
+  displayName: 'Install Node.js'
+  inputs:
+    versionSpec: '14.15.x'
+
+- bash: |
+    npm cache clean --force
+    npm install -g npm@7.x
+    npm install -g grunt-cli
+  displayName: 'Update npm and install Grunt globally'
+
+- bash: |
+    npm install
+  displayName: 'Install project dependencies'
+
+- task: Grunt@0
+  displayName: 'Build WordPress with Grunt'
+  inputs:
+    gruntFile: Gruntfile.js
+
+- task: ArchiveFiles@2
+  displayName: 'Archive build files'
+  inputs:
+    rootFolderOrFile: '$(Build.Repository.LocalPath)/build'
+    includeRootFolder: false
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
