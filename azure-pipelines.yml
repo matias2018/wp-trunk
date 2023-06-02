@@ -1,37 +1,35 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
 - master
 
 pool:
- vmImage: ubuntu-latest
- demands: node.js
+  vmImage: ubuntu-latest
+  demands: node.js
 
 steps:
 - task: NodeTool@0
   displayName: 'Install Node.js'
   inputs:
     versionSpec: 10.13.0
-  
-- bash: 
-    npm install npm -g
-    npm install grunt-cli -g
+
+- bash: |
+    npm install -g npm
+    npm install -g grunt-cli
+  displayName: 'Update npm and install Grunt globally'
+
+- bash: |
     npm install
-  displayName: 'Install Grunt globally'
+  displayName: 'Install project dependencies'
 
 - task: Grunt@0
   displayName: 'Build WordPress with Grunt'
   inputs:
-   gruntFile: Gruntfile.js
+    gruntFile: Gruntfile.js
 
 - task: ArchiveFiles@2
   displayName: 'Archive build files'
   inputs:
-   rootFolderOrFile: '$(Build.Repository.LocalPath)/build'
-   includeRootFolder: false
+    rootFolderOrFile: '$(Build.Repository.LocalPath)/build'
+    includeRootFolder: false
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'
